@@ -17,7 +17,13 @@ app.get("/:slug", verifyAssociation, (req, res) => {
 
 // Affiche les messages/commentaires
 app.get("/messages", (req, res) => {
-  res.json(messages);
+  const messagesSorted = messages
+    .sort((a, b) => {
+      return moment(a.time).diff(moment(b.time));
+    })
+    .reverse();
+
+  res.json(messagesSorted);
 });
 
 // Permet de poster un message/commentaire
@@ -29,7 +35,7 @@ app.post("/", verifyAssociation, (req, res) => {
     slug: req.body.slug,
   };
 
-  messages.unshift(message);
+  messages.push(message);
   res.status(201).json("Message sent");
 });
 
